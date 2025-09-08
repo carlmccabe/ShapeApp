@@ -42,8 +42,7 @@ public class ShapeCalculationServiceTests
         result.Centre.Should().NotBeNull();
         result.Centre!.X.Should().Be(expectedX);
         result.Centre.Y.Should().Be(expectedY);
-        result.Points.Should().NotBeEmpty();
-        result.Points.Count.Should().Be(360);
+        result.Points.Should().BeEmpty();
     }
 
     #endregion
@@ -86,7 +85,7 @@ public class ShapeCalculationServiceTests
         var points = result.Points.ToList();
 
         (points[1].X - points[0].X).Should().Be(200);
-        (points[1].Y - points[0].Y).Should().Be(200);
+        (points[2].Y - points[0].Y).Should().Be(200);
     }
 
     #endregion
@@ -155,6 +154,7 @@ public class ShapeCalculationServiceTests
         result.Points.Should().NotBeEmpty();
         result.Points.Should().HaveCount(3);
 
+        // All sides should be equal
         var points = result.Points.ToList();
         var side1Length = Math.Sqrt(Math.Pow(points[1].X - points[0].X, 2) + Math.Pow(points[1].Y - points[0].Y, 2));
         var side2Length = Math.Sqrt(Math.Pow(points[2].X - points[1].X, 2) + Math.Pow(points[2].Y - points[1].Y, 2));
@@ -163,6 +163,49 @@ public class ShapeCalculationServiceTests
         side1Length.Should().Be(side2Length);
         side2Length.Should().BeApproximately(100, 0.01);
         side3Length.Should().BeApproximately(100, 0.01);
+    }
+
+    [Fact]
+    public void CalculatePoints_ForIsoscelesTriangle_ShouldReturn3PointsWithCorrectDimensions()
+    {
+        // Arrange
+        var shape = new Shape("Isosceles Triangle", new Dictionary<string, double>
+        {
+            { "height", 100 },
+            { "width", 80 }
+        });
+
+        // Act
+        var result = sut.CalculatePoints(shape);
+
+        // Assert
+        result.Points.Should().HaveCount(3);
+        var points = result.Points;
+
+        // Base should be 80 units wide, height should be 100
+        var baseWidth = points[1].X;
+        var height = points[2].Y;
+
+        baseWidth.Should().Be(80);
+        Math.Abs(height).Should().Be(100);
+    }
+
+    [Fact]
+    public void CalculatePoints_ForScaleneTriangle_ShouldReturn3PointsWithSpecifiedSides()
+    {
+        // Arrange
+        var shape = new Shape("Scalene Triangle", new Dictionary<string, double>
+        {
+            { "side1", 100 },
+            { "side2", 150 }
+        });
+
+        // Act
+        var result = sut.CalculatePoints(shape);
+
+        // Assert
+        result.Points.Should().HaveCount(3);
+        // Note: Implementation will need to calculate third side and position points accordingly
     }
 
     #endregion
@@ -259,7 +302,8 @@ public class ShapeCalculationServiceTests
     public void CalculatePoints_ForParallelogram_ShouldReturn4PointsFormingParallelogram()
     {
         // Arrange
-        var shape = new Shape("Parallelogram", new Dictionary<string, double> { { "side length", 100 } });
+        var shape = new Shape("Parallelogram",
+            new Dictionary<string, double> { { "side length", 100 }, { "height", 50 } });
 
         // Act
         var result = sut.CalculatePoints(shape);
