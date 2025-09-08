@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ShapeGenerator.API\ShapeGenerator.API.csproj" />
+    <ProjectReference Include="..\..\src\ShapeGenerator.Core\ShapeGenerator.Core.csproj" />
   </ItemGroup>
 
 </Project>
