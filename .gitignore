@@ -1,0 +1,134 @@
+﻿# -----------------------------
+# OS junk
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# IDEs / Editors
+# -----------------------------
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+.vscode/*
+!.vscode/*.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# -----------------------------
+# .NET / ASP.NET Core
+# -----------------------------
+bin/
+obj/
+out/
+GeneratedFiles/
+TestResults/
+*.TestResult.xml
+*.trx
+*.coverage
+*.coveragexml
+src/**/bin/
+src/**/obj/
+
+# NuGet
+*.nupkg
+*.snupkg
+# If you still use a local packages folder
+packages/
+# NuGet v3 cache
+.nuget/packages/
+
+# Entity Framework / local databases
+*.mdf
+*.ldf
+*.ndf
+*.db
+*.db-shm
+*.db-wal
+
+# Publish profiles (optional, often environment-specific)
+Properties/PublishProfiles/*.pubxml
+Properties/PublishProfiles/*.pubxml.user
+
+# ASP.NET Core logs
+logs/
+*.log
+
+# Rider / ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# -----------------------------
+# JavaScript / React
+# -----------------------------
+node_modules/
+bower_components/
+
+# Build outputs
+dist/
+build/
+coverage/
+.nyc_output/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+
+# Caches
+.cache/
+.parcel-cache/
+.next/
+out/
+.storybook-out/
+storybook-static/
+.turbo/
+.pnpm-store/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+.yarn/*-state.yml
+
+# Vite / tooling caches
+node_modules/.cache/
+node_modules/.vite/
+
+# Cypress / Playwright artifacts
+cypress/screenshots/
+cypress/videos/
+playwright-report/
+test-results/
+playwright/.cache/
+
+# Env files (keep .env.example tracked)
+.env
+.env.local
+.env.*.local
+# If you prefer ignoring all envs:
+# .env.*
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Lockfiles (OPTIONAL)
+# Generally keep lockfiles under version control.
+# Uncomment if you intentionally want to ignore them:
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# -----------------------------
+# Misc
+# -----------------------------
+*.swp
+*.swo
+/.idea/
