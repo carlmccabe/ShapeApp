@@ -28,7 +28,7 @@ public class ShapeController : ControllerBase
     /// <returns></returns>
     /// <response code="200">Returns the parsed shape object</response>
     /// <response code="400">Returns an error message</response>
-    [HttpPost]
+    [HttpPost("parse")]
     [ProducesResponseType(typeof(ParseShapeResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ParseShapeResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ParseShapeResponse), StatusCodes.Status500InternalServerError)] // For now, we'll just return a generic error message'
