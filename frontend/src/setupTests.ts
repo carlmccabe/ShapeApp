@@ -1,5 +1,16 @@
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+import {server} from '../mocks/server';
+
+// import { TextEncoder, TextDecoder } from 'util';
+// (global as any).TextEncoder ??= TextEncoder;
+// (global as any).TextDecoder ??= TextDecoder as unknown as typeof global.TextDecoder;
+
+// Mock Canvas for SVG testing
+Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+    value: jest.fn(),
+});
+
+// Setup MSW
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());

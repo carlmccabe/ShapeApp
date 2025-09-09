@@ -29,6 +29,11 @@ public class ShapeDto
     /// </summary>
     public List<PointDto>? Points { get; set; }
 
+    /// <summary>
+    /// Creates a new ShapeDto from a Shape object.
+    /// </summary>
+    /// <param name="shape"></param>
+    /// <returns></returns>
     public static ShapeDto FromShape(Shape shape)
     {
         var dto = new ShapeDto
