@@ -3,7 +3,7 @@ import {ParseShapeRequest, ParseShapeResponse} from "../src/types/shapes";
 
 export const handlers = [
     http.post< {command: string}, ParseShapeRequest >('/shape/parse', async ({request}) => {
-       const newReq = await request.clone().json()
+       const newReq = await request.json()
         console.log(newReq)
         
         if (newReq.command.toLowerCase().includes('circle')) {
