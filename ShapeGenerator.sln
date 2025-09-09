@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeGenerator.API.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeGenerator.Integration.Tests", "tests\ShapeGenerator.Integration.Tests\ShapeGenerator.Integration.Tests.csproj", "{9574D847-BD51-4601-95D0-107F0823CF96}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{126E4F2F-3C76-430A-8D30-81630185C17E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
