@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using ShapeGenerator.API.Controllers;
 using ShapeGenerator.API.Models.DTOs;
@@ -10,13 +11,14 @@ namespace ShapeGenerator.API.Tests.Controllers;
 
 public class ShapeControllerTests
 {
-    private readonly Mock<IShapeParsingService> shapeParsingServiceMock = new();
-    private readonly Mock<IShapeCalculationService> shapeCalculationServiceMock = new();
-    private readonly ShapeController controller;
+    private readonly Mock<IShapeParsingService> _shapeParsingServiceMock = new();
+    private readonly Mock<IShapeCalculationService> _shapeCalculationServiceMock = new();
+    private readonly Mock<ILogger<ShapeController>> _loggerMock = new();
+    private readonly ShapeController _controller;
 
     public ShapeControllerTests()
     {
-        controller = new ShapeController(shapeParsingServiceMock.Object, shapeCalculationServiceMock.Object);
+        _controller = new ShapeController(_shapeParsingServiceMock.Object, _shapeCalculationServiceMock.Object, _loggerMock.Object);
     }
 
     #region Successful Tests
@@ -35,16 +37,16 @@ public class ShapeControllerTests
         var calculatedShape = new Shape("Circle", new Dictionary<string, double> { { "radius", 100 } });
         calculatedShape.SetCentre(new Point(100, 100));
 
-        shapeParsingServiceMock
+        _shapeParsingServiceMock
             .Setup(parsingService => parsingService.ParseCommand(request.Command))
-            .Returns(ParseResult.Success(parsedShape));
+            .ReturnsAsync(ParseResult.Success(parsedShape));
 
-        shapeCalculationServiceMock
-            .Setup(calculationService => calculationService.CalculatePoints(parsedShape))
-            .Returns(calculatedShape);
+        _shapeCalculationServiceMock
+            .Setup(calculationService => calculationService.CalculatePointsAsync(parsedShape))
+            .ReturnsAsync(calculatedShape);
 
         // Act
-        var result = await controller.ParseShape(request);
+        var result = await _controller.ParseShape(request);
 
         // Assert
         result.Should().BeOfType<OkObjectResult>();
@@ -72,18 +74,18 @@ public class ShapeControllerTests
     {
         // Arrange
         var request = new ParseShapeRequest { Command = command };
-        var parsedShape = new Shape("TestShape", new Dictionary<string, double>());
-        var calculatedShape = new Shape("TestShape", new Dictionary<string, double>());
+        var parsedShape = new Shape(shapeType, new Dictionary<string, double>());
+        var calculatedShape = new Shape(shapeType, new Dictionary<string, double>());
 
-        shapeParsingServiceMock
+        _shapeParsingServiceMock
             .Setup(parsingService => parsingService.ParseCommand(request.Command))
-            .Returns(ParseResult.Success(parsedShape));
-        shapeCalculationServiceMock
-            .Setup(calculationService => calculationService.CalculatePoints(parsedShape))
-            .Returns(calculatedShape);
+            .ReturnsAsync(ParseResult.Success(parsedShape));
+        _shapeCalculationServiceMock
+            .Setup(calculationService => calculationService.CalculatePointsAsync(parsedShape))
+            .ReturnsAsync(calculatedShape);
 
         // Act
-        var result = await controller.ParseShape(request);
+        var result = await _controller.ParseShape(request);
 
         // Assert
         result.Should().BeOfType<OkObjectResult>();
@@ -105,12 +107,12 @@ public class ShapeControllerTests
         var request = new ParseShapeRequest { Command = "An Invalid Command" };
         var expectedErrorMessage = "Invalid command format";
 
-        shapeParsingServiceMock
+        _shapeParsingServiceMock
             .Setup(parsingService => parsingService.ParseCommand(request.Command))
-            .Returns(ParseResult.Failure(expectedErrorMessage));
+            .ReturnsAsync(ParseResult.Failure(expectedErrorMessage));
 
         // Act
-        var result = await controller.ParseShape(request);
+        var result = await _controller.ParseShape(request);
 
         // Assert
         result.Should().BeOfType<BadRequestObjectResult>();
@@ -133,11 +135,11 @@ public class ShapeControllerTests
         // Arrange
         var request = new ParseShapeRequest { Command = invalidCommand };
 
-        shapeParsingServiceMock
+        _shapeParsingServiceMock
             .Setup(parsingService => parsingService.ParseCommand(request.Command))
-            .Returns(ParseResult.Failure("An Error depending on reason"));
+            .ReturnsAsync(ParseResult.Failure("An Error depending on reason"));
         // Act
-        var result = await controller.ParseShape(request);
+        var result = await _controller.ParseShape(request);
 
         // Assert  
         result.Should().BeOfType<BadRequestObjectResult>();
@@ -160,7 +162,7 @@ public class ShapeControllerTests
         var request = new ParseShapeRequest { Command = null! };
 
         // Act
-        var result = await controller.ParseShape(request);
+        var result = await _controller.ParseShape(request);
 
         // Assert
         result.Should().BeOfType<BadRequestObjectResult>();
@@ -179,7 +181,7 @@ public class ShapeControllerTests
         // Arrange
         // Request is null
         // Act
-        var result = await controller.ParseShape(null!);
+        var result = await _controller.ParseShape(null!);
 
         // Assert   
         result.Should().BeOfType<BadRequestObjectResult>();
@@ -202,12 +204,12 @@ public class ShapeControllerTests
         // Arrange
         var request = new ParseShapeRequest { Command = "Draw a circle with a radius of 100" };
 
-        shapeParsingServiceMock
+        _shapeParsingServiceMock
             .Setup(parsingService => parsingService.ParseCommand(It.IsAny<string>()))
             .Throws(new Exception("Unexpected parsing error"));
 
         // Act
-        var result = await controller.ParseShape(request);
+        var result = await _controller.ParseShape(request);
 
         // Assert
         result.Should().BeOfType<ObjectResult>();
@@ -228,16 +230,16 @@ public class ShapeControllerTests
         var request = new ParseShapeRequest { Command = "Draw a circle with a radius of 100" };
         var parsedShape = new Shape("Circle", new Dictionary<string, double> { { "radius", 100 } });
 
-        shapeParsingServiceMock
+        _shapeParsingServiceMock
             .Setup(parsingService => parsingService.ParseCommand(request.Command))
-            .Returns(ParseResult.Success(parsedShape));
+            .ReturnsAsync(ParseResult.Success(parsedShape));
 
-        shapeCalculationServiceMock
-            .Setup(calculationService => calculationService.CalculatePoints(It.IsAny<Shape>()))
+        _shapeCalculationServiceMock
+            .Setup(calculationService => calculationService.CalculatePointsAsync(It.IsAny<Shape>()))
             .Throws(new Exception("Unexpected calculation error"));
 
         // Act
-        var result = await controller.ParseShape(request);
+        var result = await _controller.ParseShape(request);
 
         // Assert   
         result.Should().BeOfType<ObjectResult>();
@@ -276,15 +278,15 @@ public class ShapeControllerTests
             new Point(0, 100)
         ]);
         
-        shapeParsingServiceMock
+        _shapeParsingServiceMock
             .Setup(parsingService => parsingService.ParseCommand(request.Command))
-            .Returns(ParseResult.Success(parsedShape));
-        shapeCalculationServiceMock
-            .Setup(calculationService => calculationService.CalculatePoints(parsedShape))
-            .Returns(calculatedShape);
+            .ReturnsAsync(ParseResult.Success(parsedShape));
+        _shapeCalculationServiceMock
+            .Setup(calculationService => calculationService.CalculatePointsAsync(parsedShape))
+            .ReturnsAsync(calculatedShape);
         
         // Act
-        var result = await controller.ParseShape(request);
+        var result = await _controller.ParseShape(request);
         
         // Assert 
         result.Should().BeOfType<OkObjectResult>();
@@ -296,7 +298,6 @@ public class ShapeControllerTests
         response.Shape.Measurements.Should().ContainKey("height");
         response.Shape.Measurements["width"].Should().Be(200);
         response.Shape.Measurements["height"].Should().Be(100);
-        response.Shape.Centre.Should().NotBeNull();
         response.ErrorMessage.Should().BeNullOrEmpty();
         response.Shape.Points.Should().HaveCount(4);
     }
@@ -310,15 +311,15 @@ public class ShapeControllerTests
         var calculatedShape = new Shape("Circle", new Dictionary<string, double> { { "radius", 100 } });
         calculatedShape.SetCentre(new Point(100, 100));
         
-        shapeParsingServiceMock
+        _shapeParsingServiceMock
             .Setup(parsingService => parsingService.ParseCommand(request.Command))
-            .Returns(ParseResult.Success(parsedShape));
-        shapeCalculationServiceMock
-            .Setup(calculationService => calculationService.CalculatePoints(parsedShape))
-            .Returns(calculatedShape);
+            .ReturnsAsync(ParseResult.Success(parsedShape));
+        _shapeCalculationServiceMock
+            .Setup(calculationService => calculationService.CalculatePointsAsync(parsedShape))
+            .ReturnsAsync(calculatedShape);
         
         // Act
-        var result = await controller.ParseShape(request);
+        var result = await _controller.ParseShape(request);
         
         // Assert
         result.Should().BeOfType<OkObjectResult>();
@@ -346,14 +347,14 @@ public class ShapeControllerTests
         var calculatedShape = new Shape("Circle", new Dictionary<string, double> { { "radius", 100 } });
         calculatedShape.SetCentre(new Point(100, 100));
         
-        shapeParsingServiceMock
+        _shapeParsingServiceMock
             .Setup(parsingService => parsingService.ParseCommand(request.Command))
-            .Returns(ParseResult.Success(parsedShape));
-        shapeCalculationServiceMock
-            .Setup(calculationService => calculationService.CalculatePoints(parsedShape));
+            .ReturnsAsync(ParseResult.Success(parsedShape));
+        _shapeCalculationServiceMock
+            .Setup(calculationService => calculationService.CalculatePointsAsync(parsedShape));
         
         // Act
-        var result = await controller.ParseShape(request);
+        var result = await _controller.ParseShape(request);
         // Assert
         result.Should().BeOfType<OkObjectResult>();
         var okResult = result as OkObjectResult;
@@ -367,12 +368,12 @@ public class ShapeControllerTests
         var request = new ParseShapeRequest { Command = "An Invalid Command" };
         var expectedErrorMessage = "Invalid command format";
         
-        shapeParsingServiceMock
+        _shapeParsingServiceMock
             .Setup(parsingService => parsingService.ParseCommand(request.Command))
-            .Returns(ParseResult.Failure(expectedErrorMessage));
+            .ReturnsAsync(ParseResult.Failure(expectedErrorMessage));
         
         // Act
-        var result = await controller.ParseShape(request);
+        var result = await _controller.ParseShape(request);
         // Assert
         result.Should().BeOfType<BadRequestObjectResult>();
         var badRequestResult = result as BadRequestObjectResult;

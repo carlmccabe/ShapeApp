@@ -15,5 +15,5 @@ public interface IShapeCalculationService
     /// <exception cref="ArgumentNullException">Thrown when shape is null</exception>
     /// <exception cref="NotSupportedException">Thrown when shape type is not supported</exception>
     /// <exception cref="ArgumentException">Thrown when required dimensions are missing</exception>
-    Shape CalculatePoints(Shape shape);
+    Task<Shape> CalculatePointsAsync(Shape shape);
 }

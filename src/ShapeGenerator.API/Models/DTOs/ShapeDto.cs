@@ -28,4 +28,21 @@ public class ShapeDto
     /// Coordinates of the shape.
     /// </summary>
     public List<PointDto>? Points { get; set; }
+
+    public static ShapeDto FromShape(Shape shape)
+    {
+        var dto = new ShapeDto
+        {
+            Type = shape.Type,
+            Measurements = shape.Measurements,
+            Points = shape.Points.Select(p => new PointDto(p.X, p.Y)).ToList()
+        };
+        
+        if (shape.Centre != null)
+            dto.Centre = new PointDto(shape.Centre.X, shape.Centre.Y);
+        else
+            dto.Centre = null;
+        
+        return dto;
+    }
 }

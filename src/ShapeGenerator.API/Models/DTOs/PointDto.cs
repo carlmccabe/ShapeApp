@@ -11,13 +11,13 @@ public class PointDto
     public double X { get; set; }
 
     /// <summary>
-    ///  Y coordinate.
+    /// Y coordinate.
     /// </summary>
     public double Y { get; set; }
 
     
     /// <summary>
-    ///  Constructor.
+    /// Assign Constructor.
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
@@ -30,4 +30,5 @@ public class PointDto
     public PointDto()
     {
     }
+
 }

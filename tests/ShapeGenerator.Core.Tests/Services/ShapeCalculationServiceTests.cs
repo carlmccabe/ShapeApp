@@ -6,18 +6,18 @@ namespace ShapeGenerator.Core.Tests.Services;
 
 public class ShapeCalculationServiceTests
 {
-    private readonly ShapeCalculationService sut = new();
+    private readonly ShapeCalculationService _sut = new();
 
     #region Circle Tests
 
     [Fact]
-    public void CalculatePoints_ForCircle_ShouldSetCentreAndRadiusOnly()
+    public async Task CalculatePoints_ForCircle_ShouldSetCentreAndRadiusOnly()
     {
         // Arrange
         var shape = new Shape("Circle", new Dictionary<string, double> { { "radius", 100 } });
 
         // Act
-        var result = sut.CalculatePoints(shape);
+        var result = await _sut.CalculatePointsAsync(shape);
 
         // Assert
         result.Centre.Should().NotBeNull();
@@ -30,13 +30,13 @@ public class ShapeCalculationServiceTests
     [InlineData(25, 25, 25)]
     [InlineData(100, 100, 100)]
     [InlineData(100.5, 100.5, 100.5)]
-    public void CalculatePoints_ForCircle_ShouldSetCorrectly(double radius, double expectedX, double expectedY)
+    public async Task CalculatePoints_ForCircle_ShouldSetCorrectly(double radius, double expectedX, double expectedY)
     {
         // Arrange
         var shape = new Shape("Circle", new Dictionary<string, double> { { "radius", radius } });
 
         // Act
-        var result = sut.CalculatePoints(shape);
+        var result = await _sut.CalculatePointsAsync(shape);
 
         // Assert
         result.Centre.Should().NotBeNull();
@@ -50,13 +50,13 @@ public class ShapeCalculationServiceTests
     #region Square Tests
 
     [Fact]
-    public void CalculatePoints_ForSquare_ShouldReturnFourPoints()
+    public async Task CalculatePoints_ForSquare_ShouldReturnFourPoints()
     {
         // Arrange
         var shape = new Shape("Square", new Dictionary<string, double> { { "side length", 100 } });
 
         // Act
-        var result = sut.CalculatePoints(shape);
+        var result = await  _sut.CalculatePointsAsync(shape);
 
         // Assert
         result.Points.Should().NotBeEmpty();
@@ -70,13 +70,13 @@ public class ShapeCalculationServiceTests
     }
 
     [Fact]
-    public void CalculatePoints_ForSquare_ShouldScaleCorrectly()
+    public async Task CalculatePoints_ForSquare_ShouldScaleCorrectly()
     {
         // Arrange
         var shape = new Shape("Square", new Dictionary<string, double> { { "side length", 200 } });
 
         // Act
-        var result = sut.CalculatePoints(shape);
+        var result = await _sut.CalculatePointsAsync(shape);
 
         // Assert
         result.Points.Should().NotBeEmpty();
@@ -93,7 +93,7 @@ public class ShapeCalculationServiceTests
     #region Rectangle Tests
 
     [Fact]
-    public void CalculatePoints_ForRectangle_ShouldReturn4PointsWithCorrectDimensions()
+    public async Task CalculatePoints_ForRectangle_ShouldReturn4PointsWithCorrectDimensions()
     {
         // Arrange
         var shape = new Shape("Rectangle", new Dictionary<string, double>
@@ -103,7 +103,7 @@ public class ShapeCalculationServiceTests
         });
 
         // Act
-        var result = sut.CalculatePoints(shape);
+        var result = await _sut.CalculatePointsAsync(shape);
 
         // Assert
         result.Points.Should().HaveCount(4);
@@ -119,7 +119,7 @@ public class ShapeCalculationServiceTests
     [InlineData(200, 300)]
     [InlineData(50, 75)]
     [InlineData(100.5, 200.7)]
-    public void CalculatePoints_ForRectangleWithDifferentDimensions_ShouldScaleCorrectly(double width, double height)
+    public async Task CalculatePoints_ForRectangleWithDifferentDimensions_ShouldScaleCorrectly(double width, double height)
     {
         // Arrange
         var shape = new Shape("Rectangle", new Dictionary<string, double>
@@ -129,7 +129,7 @@ public class ShapeCalculationServiceTests
         });
 
         // Act
-        var result = sut.CalculatePoints(shape);
+        var result = await _sut.CalculatePointsAsync(shape);
 
         // Assert
         var points = result.Points;
@@ -142,13 +142,13 @@ public class ShapeCalculationServiceTests
     #region Triangle Tests
 
     [Fact]
-    public void CalculatePoints_ForEquilateralTriangle_ShouldReturnThreePointsFormingEquilateralTriangle()
+    public async Task CalculatePoints_ForEquilateralTriangle_ShouldReturnThreePointsFormingEquilateralTriangle()
     {
         // Arrange
         var shape = new Shape("Equilateral Triangle", new Dictionary<string, double> { { "side length", 100 } });
 
         // Act
-        var result = sut.CalculatePoints(shape);
+        var result = await _sut.CalculatePointsAsync(shape);
 
         // Assert
         result.Points.Should().NotBeEmpty();
@@ -166,7 +166,7 @@ public class ShapeCalculationServiceTests
     }
 
     [Fact]
-    public void CalculatePoints_ForIsoscelesTriangle_ShouldReturn3PointsWithCorrectDimensions()
+    public async Task CalculatePoints_ForIsoscelesTriangle_ShouldReturn3PointsWithCorrectDimensions()
     {
         // Arrange
         var shape = new Shape("Isosceles Triangle", new Dictionary<string, double>
@@ -176,7 +176,7 @@ public class ShapeCalculationServiceTests
         });
 
         // Act
-        var result = sut.CalculatePoints(shape);
+        var result = await _sut.CalculatePointsAsync(shape);
 
         // Assert
         result.Points.Should().HaveCount(3);
@@ -191,7 +191,7 @@ public class ShapeCalculationServiceTests
     }
 
     [Fact]
-    public void CalculatePoints_ForScaleneTriangle_ShouldReturn3PointsWithSpecifiedSides()
+    public async Task CalculatePoints_ForScaleneTriangle_ShouldReturn3PointsWithSpecifiedSides()
     {
         // Arrange
         var shape = new Shape("Scalene Triangle", new Dictionary<string, double>
@@ -201,7 +201,7 @@ public class ShapeCalculationServiceTests
         });
 
         // Act
-        var result = sut.CalculatePoints(shape);
+        var result = await _sut.CalculatePointsAsync(shape);
 
         // Assert
         result.Points.Should().HaveCount(3);
@@ -217,27 +217,27 @@ public class ShapeCalculationServiceTests
     [InlineData("Hexagon", 6)]
     [InlineData("Heptagon", 7)]
     [InlineData("Octagon", 8)]
-    public void CalculatePoints_ForRegularPolygon_ShouldReturnCorrectNumberOfPoints(string shapeType,
+    public async Task CalculatePoints_ForRegularPolygon_ShouldReturnCorrectNumberOfPoints(string shapeType,
         int expectedPointCount)
     {
         // Arrange
         var shape = new Shape(shapeType, new Dictionary<string, double> { { "side length", 100 } });
 
         // Act
-        var result = sut.CalculatePoints(shape);
+        var result = await _sut.CalculatePointsAsync(shape);
 
         // Assert
         result.Points.Should().HaveCount(expectedPointCount);
     }
 
     [Fact]
-    public void CalculatePoints_ForPentagon_ShouldFormRegularPentagon()
+    public async Task CalculatePoints_ForPentagon_ShouldFormRegularPentagon()
     {
         // Arrange
         var shape = new Shape("Pentagon", new Dictionary<string, double> { { "side length", 100 } });
 
         // Act
-        var result = sut.CalculatePoints(shape);
+        var result = await _sut.CalculatePointsAsync(shape);
 
         // Assert
         result.Points.Should().HaveCount(5);
@@ -247,18 +247,18 @@ public class ShapeCalculationServiceTests
         var distances = result.Points.Select(p =>
             Math.Sqrt(Math.Pow(p.X - center.X, 2) + Math.Pow(p.Y - center.Y, 2))).ToList();
 
-        // All points should be equidistant from center
+        // All points should be equidistant from the centre
         distances.Should().AllSatisfy(d => d.Should().BeApproximately(distances[0], 0.1));
     }
 
     [Fact]
-    public void CalculatePoints_ForOctagon_ShouldFormRegularOctagon()
+    public async Task CalculatePoints_ForOctagon_ShouldFormRegularOctagon()
     {
         // Arrange
         var shape = new Shape("Octagon", new Dictionary<string, double> { { "side length", 50 } });
 
         // Act
-        var result = sut.CalculatePoints(shape);
+        var result = await _sut.CalculatePointsAsync(shape);
 
         // Assert
         result.Points.Should().HaveCount(8);
@@ -281,7 +281,7 @@ public class ShapeCalculationServiceTests
     #region Special Shape Tests
 
     [Fact]
-    public void CalculatePoints_ForOval_ShouldSetCenterAndNotUsePoints()
+    public async Task CalculatePoints_ForOval_ShouldSetCenterAndNotUsePoints()
     {
         // Arrange
         var shape = new Shape("Oval", new Dictionary<string, double>
@@ -291,22 +291,22 @@ public class ShapeCalculationServiceTests
         });
 
         // Act
-        var result = sut.CalculatePoints(shape);
+        var result = await _sut.CalculatePointsAsync(shape);
 
         // Assert
         result.Centre.Should().NotBeNull();
-        result.Points.Should().BeEmpty(); // Ovals use center and dimensions, not point arrays
+        result.Points.Should().BeEmpty(); // Ovals use centre and dimensions, not point arrays
     }
 
     [Fact]
-    public void CalculatePoints_ForParallelogram_ShouldReturn4PointsFormingParallelogram()
+    public async Task CalculatePoints_ForParallelogram_ShouldReturn4PointsFormingParallelogram()
     {
         // Arrange
         var shape = new Shape("Parallelogram",
             new Dictionary<string, double> { { "side length", 100 }, { "height", 50 } });
 
         // Act
-        var result = sut.CalculatePoints(shape);
+        var result = await _sut.CalculatePointsAsync(shape);
 
         // Assert
         result.Points.Should().HaveCount(4);
@@ -329,7 +329,7 @@ public class ShapeCalculationServiceTests
     public void CalculatePoints_WithNullShape_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Action act = () => sut.CalculatePoints(null!);
+        Action act = () =>  _sut.CalculatePointsAsync(null!);
         act.Should().Throw<ArgumentNullException>();
     }
 
@@ -340,7 +340,7 @@ public class ShapeCalculationServiceTests
         var shape = new Shape("Dodecagon", new Dictionary<string, double> { { "side length", 100 } });
 
         // Act & Assert
-        Action act = () => sut.CalculatePoints(shape);
+        Action act = () => _sut.CalculatePointsAsync(shape);
         act.Should().Throw<NotSupportedException>()
             .WithMessage("Shape type 'Dodecagon' is not supported for coordinate calculation");
     }
@@ -348,11 +348,11 @@ public class ShapeCalculationServiceTests
     [Fact]
     public void CalculatePoints_WithMissingRequiredDimension_ShouldThrowArgumentException()
     {
-        // Arrange - Circle without radius
+        // Arrange - Circle without a radius
         var shape = new Shape("Circle", new Dictionary<string, double>());
 
         // Act & Assert
-        Action act = () => sut.CalculatePoints(shape);
+        Action act = () => _sut.CalculatePointsAsync(shape);
         act.Should().Throw<ArgumentException>()
             .WithMessage("Required dimension 'radius' not found for shape 'Circle'");
     }

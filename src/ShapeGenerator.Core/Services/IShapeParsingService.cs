@@ -9,5 +9,5 @@ public interface IShapeParsingService
     /// </summary>
     /// <param name="command"></param>
     /// <returns>ParseResult indicating success/failure and contains the parsed shape</returns>
-    ParseResult ParseCommand(string command);
+    Task<ParseResult> ParseCommand(string command);
 }

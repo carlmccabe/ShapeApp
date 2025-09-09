@@ -5,7 +5,7 @@ namespace ShapeGenerator.Core.Tests.Services;
 
 public class ShapeParsingServiceTests
 {
-    private readonly ShapeParsingService sut = new();
+    private readonly ShapeParsingService _sut = new();
 
     #region Single Measurement Commands
 
@@ -15,11 +15,11 @@ public class ShapeParsingServiceTests
     [InlineData("Draw a octagon with a side length of 200", "Octagon", "side length", 200)]
     [InlineData("Draw a hexagon with a side length of 120", "Hexagon", "side length", 120)]
     [InlineData("Draw a heptagon with a side length of 90", "Heptagon", "side length", 90)]
-    public void ParseCommand_WithSingleDimension_ShouldReturnSuccessResult(string command, string shapeType,
+    public async Task ParseCommand_WithSingleDimension_ShouldReturnSuccessResult(string command, string shapeType,
         string dimensionName, double dimensionValue)
     {
         // Act
-        var result = sut.ParseCommand(command);
+        var result = await _sut.ParseCommand(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -33,11 +33,11 @@ public class ShapeParsingServiceTests
     [Theory]
     [InlineData("Draw an oval with a width of 200", "Oval", "width", 200)]
     [InlineData("Draw a parallelogram with a side length of 100", "Parallelogram", "side length", 100)]
-    public void ParseCommand_WithSpecialShapes_ShouldReturnCorrectShape(
+    public async Task ParseCommand_WithSpecialShapes_ShouldReturnCorrectShape(
         string command, string expectedShape, string expectedMeasurement, double expectedValue)
     {
         // Act
-        var result = sut.ParseCommand(command);
+        var result = await _sut.ParseCommand(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -55,11 +55,11 @@ public class ShapeParsingServiceTests
     //     200, "width", 100)]
     // [InlineData("Draw a scalene triangle with a side1 of 100 and a side2 of 150", "Scalene Triangle", "side1", 100, "side2", 150)]
     [InlineData("Draw an oval with a width of 300 and a height of 200", "Oval", "width", 300, "height", 200)]
-    public void ParseCommand_WithTwoMeasurements_ShouldReturnCorrectShape(
+    public async Task ParseCommand_WithTwoMeasurements_ShouldReturnCorrectShape(
         string command, string expectedShape, string measurement1, double value1, string measurement2, double value2)
     {
         // Act
-        var result = sut.ParseCommand(command);
+        var result = await _sut.ParseCommand(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -79,7 +79,7 @@ public class ShapeParsingServiceTests
     //     var command = "Draw an equilateral triangle with a side length of 100";
     //
     //     // Act
-    //     var result = _sut.ParseCommand(command);
+    //     var result = _await sut.ParseCommand(command);
     //
     //     // Assert
     //     result.IsSuccess.Should().BeTrue();
@@ -93,10 +93,10 @@ public class ShapeParsingServiceTests
     #region Invalid Input Handling
 
     [Fact]
-    public void ParseCommand_WithNullInput_ShouldReturnFailure()
+    public async Task ParseCommand_WithNullInput_ShouldReturnFailure()
     {
         // Act
-        var result = sut.ParseCommand(null!);
+        var result = await _sut.ParseCommand(null!);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -110,10 +110,10 @@ public class ShapeParsingServiceTests
     [InlineData("Draw something")]
     [InlineData("Draw a shape")]
     [InlineData("Make a circle")]
-    public void ParseCommand_WithInvalidFormat_ShouldReturnFailure(string invalidCommand)
+    public async Task ParseCommand_WithInvalidFormat_ShouldReturnFailure(string invalidCommand)
     {
         // Act
-        var result = sut.ParseCommand(invalidCommand);
+        var result = await _sut.ParseCommand(invalidCommand);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -125,10 +125,10 @@ public class ShapeParsingServiceTests
     [InlineData("Draw a circle with a radius of -50")]
     [InlineData("Draw a square with a side length of -100")]
     [InlineData("Draw a rectangle with a width of 100 and a height of -50")]
-    public void ParseCommand_WithNegativeMeasurement_ShouldReturnFailure(string command)
+    public async Task ParseCommand_WithNegativeMeasurement_ShouldReturnFailure(string command)
     {
         // Act
-        var result = sut.ParseCommand(command);
+        var result = await _sut.ParseCommand(command);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -139,10 +139,10 @@ public class ShapeParsingServiceTests
     [Theory]
     [InlineData("Draw a circle with a radius of 0")]
     [InlineData("Draw a square with a side length of 0")]
-    public void ParseCommand_WithZeroMeasurement_ShouldReturnFailure(string command)
+    public async Task ParseCommand_WithZeroMeasurement_ShouldReturnFailure(string command)
     {
         // Act
-        var result = sut.ParseCommand(command);
+        var result = await _sut.ParseCommand(command);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -153,10 +153,10 @@ public class ShapeParsingServiceTests
     [InlineData("Draw a dodecagon with a side length of 100")]
     [InlineData("Draw a star with a radius of 50")]
     [InlineData("Draw a heart with a size of 100")]
-    public void ParseCommand_WithUnsupportedShape_ShouldReturnFailure(string command)
+    public async Task ParseCommand_WithUnsupportedShape_ShouldReturnFailure(string command)
     {
         // Act
-        var result = sut.ParseCommand(command);
+        var result = await _sut.ParseCommand(command);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -172,10 +172,10 @@ public class ShapeParsingServiceTests
     [InlineData("Draw a Circle with a Radius of 100")] // Mixed case
     [InlineData("draw a circle with a radius of 100")] // Lowercase
     [InlineData("DRAW A CIRCLE WITH A RADIUS OF 100")] // Uppercase
-    public void ParseCommand_WithDifferentCasing_ShouldBeHandledCorrectly(string command)
+    public async Task ParseCommand_WithDifferentCasing_ShouldBeHandledCorrectly(string command)
     {
         // Act
-        var result = sut.ParseCommand(command);
+        var result = await _sut.ParseCommand(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -185,10 +185,10 @@ public class ShapeParsingServiceTests
     [Theory]
     [InlineData("Draw a circle with a radius of 100.5")]
     [InlineData("Draw a rectangle with a width of 150.25 and a height of 200.75")]
-    public void ParseCommand_WithDecimalMeasurements_ShouldParseCorrectly(string command)
+    public async Task ParseCommand_WithDecimalMeasurements_ShouldParseCorrectly(string command)
     {
         // Act
-        var result = sut.ParseCommand(command);
+        var result = await _sut.ParseCommand(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -198,10 +198,10 @@ public class ShapeParsingServiceTests
     [Theory]
     [InlineData("  Draw a circle with a radius of 100  ")] // Leading/trailing spaces
     [InlineData("Draw  a  circle  with  a  radius  of  100")] // Multiple spaces
-    public void ParseCommand_WithExtraWhitespace_ShouldParseCorrectly(string command)
+    public async Task ParseCommand_WithExtraWhitespace_ShouldParseCorrectly(string command)
     {
         // Act
-        var result = sut.ParseCommand(command);
+        var result = await _sut.ParseCommand(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -211,10 +211,10 @@ public class ShapeParsingServiceTests
     [Theory]
     [InlineData("Draw a circle with a radius of abc")]
     [InlineData("Draw a square with a side length of xyz")]
-    public void ParseCommand_WithNonNumericMeasurement_ShouldReturnFailure(string command)
+    public async Task ParseCommand_WithNonNumericMeasurement_ShouldReturnFailure(string command)
     {
         // Act
-        var result = sut.ParseCommand(command);
+        var result = await _sut.ParseCommand(command);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -226,7 +226,7 @@ public class ShapeParsingServiceTests
     #region Required Shape Coverage
 
     [Fact]
-    public void ParseCommand_ShouldSupportAllRequiredBasicShapes()
+    public async Task ParseCommand_ShouldSupportAllRequiredBasicShapes()
     {
         // Arrange
         var basicShapes = new[]
@@ -240,7 +240,7 @@ public class ShapeParsingServiceTests
         foreach (var (command, expectedType) in basicShapes)
         {
             // Act
-            var result = sut.ParseCommand(command);
+            var result = await _sut.ParseCommand(command);
 
             // Assert
             result.IsSuccess.Should().BeTrue($"Failed to parse: {command}");
@@ -262,7 +262,7 @@ public class ShapeParsingServiceTests
     //     foreach (var (command, expectedType) in triangles)
     //     {
     //         // Act
-    //         var result = _sut.ParseCommand(command);
+    //         var result = _await sut.ParseCommand(command);
     //
     //         // Assert
     //         result.IsSuccess.Should().BeTrue($"Failed to parse: {command}");
@@ -285,7 +285,7 @@ public class ShapeParsingServiceTests
     //     foreach (var (command, expectedType) in polygons)
     //     {
     //         // Act
-    //         var result = _sut.ParseCommand(command);
+    //         var result = _await sut.ParseCommand(command);
     //
     //         // Assert
     //         result.IsSuccess.Should().BeTrue($"Failed to parse: {command}");

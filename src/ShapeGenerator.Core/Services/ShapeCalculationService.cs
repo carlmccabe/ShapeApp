@@ -4,13 +4,13 @@ namespace ShapeGenerator.Core.Services;
 
 public class ShapeCalculationService : IShapeCalculationService
 {
-    public Shape CalculatePoints(Shape shape)
+    public Task<Shape> CalculatePointsAsync(Shape shape)
     {
         if (shape is null)
             throw new ArgumentNullException(nameof(shape));
 
         // Validation → Shape-specific calculation → Return updated shape
-        return shape.Type switch
+        return Task.FromResult(shape.Type switch
         {
             "Circle" => CalculateCircle(shape),
             "Square" => CalculateSquare(shape),
@@ -25,7 +25,7 @@ public class ShapeCalculationService : IShapeCalculationService
             "Oval" => CalculateOval(shape),
             "Parallelogram" => CalculateParallelogram(shape),
             _ => throw new ArgumentException("Invalid shape type.", nameof(shape))
-        };
+        });
     }
 
     private Shape CalculateCircle(Shape shape)
@@ -135,7 +135,7 @@ public class ShapeCalculationService : IShapeCalculationService
         var points = new List<Point>();
         var angleStep = 2 * Math.PI / numberOfSides;
 
-        // Start from top (angle = -PI/2) and go clockwise
+        // Start from the top (angle = -PI/2) and go clockwise
         var startAngle = -Math.PI / 2;
 
         for (int i = 0; i < numberOfSides; i++)

@@ -31,7 +31,7 @@ public partial class ShapeParsingService : IShapeParsingService
         
     };
 
-    public ParseResult ParseCommand(string command)
+    public async Task<ParseResult> ParseCommand(string command)
     {
         // Validate command
         if (string.IsNullOrWhiteSpace(command))
