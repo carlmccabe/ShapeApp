@@ -1,52 +1,59 @@
-import { http } from 'msw';
+import {http, HttpResponse} from 'msw';
 import {ParseShapeRequest, ParseShapeResponse} from "../src/types/shapes";
 
 export const handlers = [
-    http.post< {command: string}, ParseShapeRequest >('/shape/parse', async ({request}) => {
-       const newReq = await request.json()
-        console.log(newReq)
+    http.post<{command: string}, ParseShapeRequest>('http://localhost:5010/shape/parse', async ({request}) => {
+        const newReq = await request.json()
+        console.log('MSW intercepted request:', newReq)
         
+        // Handle network error test case
+        if (newReq.command.toLowerCase().includes('network error')) {
+            return HttpResponse.error()
+        }
+
+
+        // Handle specific test cases that expect exact error messages
+        if (newReq.command === 'Invalid command format') {
+            const errorResponse: ParseShapeResponse = {
+                success: false,
+                errorMessage: 'Invalid command format'
+            }
+            return HttpResponse.json(errorResponse, { status: 400 })
+        }
+
+        // handle the different shape types
         if (newReq.command.toLowerCase().includes('circle')) {
             const response: ParseShapeResponse = {
                 success: true,
                 shape: {
-                    type: 'circle',
+                    type: 'Circle',
                     measurements: {
                         radius: 100
                     },
-                    points: [
-                        {
-                            x: 100,
-                            y: 100
-                        }
-                    ]
+                    points: [],
+                    centre: { x: 100, y: 100 }
                 }
             };
-            return new Response(JSON.stringify(response), {
-                status: 200,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            return HttpResponse.json(response)
         }
         
         if (newReq.command.toLowerCase().includes('square')) {
             const response: ParseShapeResponse = {
                 success: true,
                 shape: {
-                    type: 'square',
+                    type: 'Square',
                     measurements: {
-                        side: 100
+                        'side length': 100
                     },
-                    points: []
+                    points: [
+                        { x: 0, y: 0 },
+                        { x: 100, y: 0 },
+                        { x: 100, y: 100 },
+                        { x: 0, y: 100 }
+                    ]
                 }
             }
-            return new Response(JSON.stringify(response), {
-                status: 200,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            return HttpResponse.json(response)
         }
         
         if (newReq.command.toLowerCase().includes('rectangle')) {
@@ -55,29 +62,25 @@ export const handlers = [
                 shape: {
                     type: 'rectangle',
                     measurements: {
-                        width: 100,
-                        height: 100
+                        'width': 100,
+                        'height': 200
                     },
-                    points: []
+                    points: [
+                        { x: 0, y: 0 },
+                        { x: 100, y: 0 },
+                        { x: 100, y: 100 },
+                        { x: 0, y: 100 }
+                    ]
                 }
             }
-            return new Response(JSON.stringify(response), {
-                status: 200,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }) 
+            return HttpResponse.json(response)
         }
         
         const errorResponse: ParseShapeResponse = {
             success: false,
-            errorMessages: 'Invalid command format'
+            errorMessage: 'Invalid command format'
         }
-        return new Response(JSON.stringify(errorResponse), {
-            status: 400,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+        
+        return HttpResponse.json(errorResponse, {status: 400})
     })
 ]

@@ -23,11 +23,11 @@ export const parseShape = async (command: string) => {
             if (error.response) {
                 return error.response.data as ParseShapeResponse;
             } else if (error.request) {
-                return {success: false, errorMessages: 'Network error occurred. Please try again later.', shape: null};
+                return {success: false, errorMessage: 'Network error occurred. Please try again later.', shape: null};
             } else {
-                return {success: false, errorMessages: 'Error making the request'};
+                return {success: false, errorMessage: 'Error making the request'};
             }
         }
-        return {success: false, errorMessages: 'An unexpected error occurred'};
+        return {success: false, errorMessage: 'An unexpected error occurred'};
     }
 };

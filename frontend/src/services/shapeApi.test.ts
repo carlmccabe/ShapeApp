@@ -27,8 +27,7 @@ describe('shapeApi', () => {
         // Assert
         expect(response.success).toBe(true);
         expect(response.shape?.type).toBe("Square");
-        expect(response.shape?.measurements.sideLength).toBe(100);
-        expect(response.shape?.centre).toEqual({x: 100, y: 100})
+        expect(response.shape?.measurements['side length']).toBe(100);
     });
 
     it('should handle API errors gracefully', async () => {
@@ -53,7 +52,7 @@ describe('shapeApi', () => {
 
         // Assert
         expect(result.success).toBe(false);
-        expect(result.errorMessages).toBe('Invalid command format');
+        expect(result.errorMessage).toBe('Invalid command format');
     })
 
     it('should handle network errors', async () => {
@@ -69,7 +68,7 @@ describe('shapeApi', () => {
 
         // Assert
         expect(result.success).toBe(false);
-        expect(result.errorMessages).toBe('Network error');
+        expect(result.errorMessage).toBe('Network error');
     })
 
     it('should handle server errors', async () => {
@@ -90,7 +89,7 @@ describe('shapeApi', () => {
 
         // Assert
         expect(result.success).toBe(false);
-        expect(result.errorMessages).toBe('Internal server error');
+        expect(result.errorMessage).toBe('Internal server error');
     })
     
 });

@@ -24,7 +24,7 @@ export interface ParseShapeRequest {
 
 export interface ParseShapeResponse {
     success: boolean;
-    errorMessages?: string;
+    errorMessage?: string;
     shape?: ShapeData;
 }
 
