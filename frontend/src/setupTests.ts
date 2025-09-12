@@ -11,6 +11,15 @@ const { TextEncoder, TextDecoder } = require('util');
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 
+let clipboardText = '';
+
+Object.defineProperty(navigator, 'clipboard', {
+    value: {
+        readText: () => clipboardText,
+        writeText: (text: string) => clipboardText = text
+    }
+});
+
 // Setup MSW
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());

@@ -1,0 +1,2 @@
+export {ShapeCanvas} from './ShapeCanvas';
+

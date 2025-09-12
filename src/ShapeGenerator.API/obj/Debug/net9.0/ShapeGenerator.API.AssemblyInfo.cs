@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ShapeGenerator.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e7df417867d2ba57ca81039680f70734440cda85")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b12079f04f930c1ac389e92d14b79e03f5771aa8")]
 [assembly: System.Reflection.AssemblyProductAttribute("ShapeGenerator.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ShapeGenerator.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

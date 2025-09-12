@@ -3,7 +3,7 @@ import {ShapeData} from "../../types/shapes";
 import './ShapeCanvas.css'
 
 interface ShapeCanvasProps {
-    shape?: ShapeData
+    shape?: ShapeData | null;
 }
 
 export const ShapeCanvas: React.FC<ShapeCanvasProps> = ({shape}: ShapeCanvasProps) => {
@@ -59,16 +59,34 @@ export const ShapeCanvas: React.FC<ShapeCanvasProps> = ({shape}: ShapeCanvasProp
         }
     }
 
+    const calculateViewBox = () => {
+        // for larger shapes, we can use the bounding box
+        //todo align shape better
+        if (shape.points && shape.points.length > 0) {
+            const xValues = shape.points.map(point => point.x);
+            const yValues = shape.points.map(point => point.y);
+            const minX = Math.min(...xValues);
+            const maxX = Math.max(...xValues);
+            const minY = Math.min(...yValues);
+            const maxY = Math.max(...yValues);
+            return `${minX} ${minY} ${maxX - minX} ${maxY - minY}`;
+            
+        }
+        return "0 0 300 300"
+
+    };
     return (
         <div
             className="shape-canvas"
             data-testid="shape-canvas"
         >
+            <h2>Generated Shape</h2>
+            {/*Todo add clear button*/}
             <div className="shape-canvas__svg-container" data-testid="svg-container">
                 <svg
                     role="img"
                     aria-label={`Generated ${shape.type} shape`}
-                    viewBox="0 0 300 300"
+                    viewBox={calculateViewBox()}
                     className="shape-canvas__svg" 
                     data-testid="svg"
                 >

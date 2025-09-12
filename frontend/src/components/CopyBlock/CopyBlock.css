@@ -1,0 +1,36 @@
+.code-block {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+}
+
+.code-block__code {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Ensure long strings wrap on small screens */
+.code-block__pre p{
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+    font-size: 0.95rem;
+}
+
+.code-block__button {
+    flex: 0 0 auto;
+    height: 32px;
+}
+
+@media (max-width: 480px) {
+    .code-block {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .code-block .button {
+        align-self: flex-start;
+    }
+}
